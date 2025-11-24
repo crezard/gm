@@ -4,22 +4,30 @@ import { Question, UsageType } from "../types";
 export const generateQuestions = async (count: number, usageType: UsageType): Promise<Question[]> => {
   let apiKey = '';
 
-  // 1. Try process.env (Standard Node/Webpack/CRA)
+  // 1. Try various environment variable patterns (Standard Node, Next.js, CRA)
   try {
-    if (typeof process !== 'undefined' && process.env?.API_KEY) {
-      apiKey = process.env.API_KEY;
+    if (typeof process !== 'undefined' && process.env) {
+      if (process.env.API_KEY) apiKey = process.env.API_KEY;
+      else if (process.env.NEXT_PUBLIC_API_KEY) apiKey = process.env.NEXT_PUBLIC_API_KEY;
+      else if (process.env.REACT_APP_API_KEY) apiKey = process.env.REACT_APP_API_KEY;
     }
-  } catch (e) {}
+  } catch (e) {
+    // Ignore process access errors
+  }
 
-  // 2. Try Vite environment variables (Common in Vercel/Vite deployments)
+  // 2. Try Vite environment variables
   if (!apiKey) {
     try {
       // @ts-ignore
-      if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_KEY) {
+      if (typeof import.meta !== 'undefined' && import.meta.env) {
         // @ts-ignore
-        apiKey = import.meta.env.VITE_API_KEY;
+        if (import.meta.env.VITE_API_KEY) apiKey = import.meta.env.VITE_API_KEY;
+        // @ts-ignore
+        else if (import.meta.env.API_KEY) apiKey = import.meta.env.API_KEY;
       }
-    } catch (e) {}
+    } catch (e) {
+      // Ignore import.meta access errors
+    }
   }
 
   // 3. Try URL Query Parameters (Fallback for quick testing without rebuilds)
@@ -31,9 +39,14 @@ export const generateQuestions = async (count: number, usageType: UsageType): Pr
   if (!apiKey) {
     throw new Error(
       "API Key를 찾을 수 없습니다.\n\n" +
-      "다음 중 하나의 방법으로 해결해주세요:\n" +
-      "1. Vercel Settings > Environment Variables에 'API_KEY' (또는 'VITE_API_KEY')를 추가하고 재배포하세요.\n" +
-      "2. 또는 브라우저 주소 뒤에 '?key=AIza...' 형식으로 API 키를 직접 붙여서 접속하세요."
+      "Vercel 배포 시 환경 변수 설정이 필요합니다.\n" +
+      "Settings > Environment Variables에서 다음 변수명 중 하나로 API 키를 추가해주세요:\n" +
+      "- VITE_API_KEY (Vite 권장)\n" +
+      "- NEXT_PUBLIC_API_KEY\n" +
+      "- REACT_APP_API_KEY\n" +
+      "- API_KEY\n\n" +
+      "⚠️ 변수 추가 후에는 반드시 'Redeploy'를 해야 적용됩니다.\n" +
+      "임시 해결책: 브라우저 주소 뒤에 '?key=AIza...' 형식으로 키를 붙여 접속하세요."
     );
   }
 
