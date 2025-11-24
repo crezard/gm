@@ -178,7 +178,9 @@ const App: React.FC = () => {
             <div className="bg-red-50 p-8 rounded-3xl border border-red-100">
               <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-red-800 mb-2">오류가 발생했습니다</h3>
-              <p className="text-red-600 mb-6 break-words">{error}</p>
+              <p className="text-red-600 mb-6 break-words whitespace-pre-wrap text-left bg-white p-4 rounded-lg border border-red-100 text-sm">
+                {error}
+              </p>
               <Button onClick={() => setAppState(AppState.START)} variant="secondary">
                 처음으로 돌아가기
               </Button>

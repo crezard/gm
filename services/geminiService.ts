@@ -3,18 +3,38 @@ import { Question, UsageType } from "../types";
 
 export const generateQuestions = async (count: number, usageType: UsageType): Promise<Question[]> => {
   let apiKey = '';
+
+  // 1. Try process.env (Standard Node/Webpack/CRA)
   try {
-    // Safely attempt to access process.env.API_KEY
-    // In browser environments without a bundler shim, accessing 'process' might throw ReferenceError
-    if (typeof process !== 'undefined' && process.env) {
-      apiKey = process.env.API_KEY || '';
+    if (typeof process !== 'undefined' && process.env?.API_KEY) {
+      apiKey = process.env.API_KEY;
     }
-  } catch (e) {
-    console.warn("Error accessing process.env. Ensure your environment variables are configured.", e);
+  } catch (e) {}
+
+  // 2. Try Vite environment variables (Common in Vercel/Vite deployments)
+  if (!apiKey) {
+    try {
+      // @ts-ignore
+      if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_KEY) {
+        // @ts-ignore
+        apiKey = import.meta.env.VITE_API_KEY;
+      }
+    } catch (e) {}
+  }
+
+  // 3. Try URL Query Parameters (Fallback for quick testing without rebuilds)
+  if (!apiKey && typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search);
+    apiKey = params.get('key') || params.get('apiKey') || '';
   }
 
   if (!apiKey) {
-    throw new Error("API Key가 설정되지 않았습니다. Vercel 설정에서 API_KEY 환경 변수를 확인해주세요.");
+    throw new Error(
+      "API Key를 찾을 수 없습니다.\n\n" +
+      "다음 중 하나의 방법으로 해결해주세요:\n" +
+      "1. Vercel Settings > Environment Variables에 'API_KEY' (또는 'VITE_API_KEY')를 추가하고 재배포하세요.\n" +
+      "2. 또는 브라우저 주소 뒤에 '?key=AIza...' 형식으로 API 키를 직접 붙여서 접속하세요."
+    );
   }
 
   const ai = new GoogleGenAI({ apiKey: apiKey });
@@ -85,8 +105,8 @@ export const generateQuestions = async (count: number, usageType: UsageType): Pr
   } catch (error: any) {
     console.error("Gemini API Error:", error);
     // Return a more user-friendly error message if it's an API failure
-    if (error.message && error.message.includes("API key")) {
-      throw new Error("API 키 오류입니다. 키가 올바른지 확인해주세요.");
+    if (error.message && (error.message.includes("API key") || error.message.includes("403"))) {
+      throw new Error("API 키가 유효하지 않거나 권한이 없습니다. 키를 다시 확인해주세요.");
     }
     throw error;
   }
