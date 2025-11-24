@@ -34,9 +34,10 @@ const App: React.FC = () => {
         isCorrect: {}
       });
       setAppState(AppState.QUIZ);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("문제를 불러오는 도중 오류가 발생했습니다. 다시 시도해주세요.");
+      // Display the actual error message thrown by the service
+      setError(err.message || "문제를 불러오는 도중 오류가 발생했습니다. 다시 시도해주세요.");
       setAppState(AppState.ERROR);
     }
   };
@@ -177,7 +178,7 @@ const App: React.FC = () => {
             <div className="bg-red-50 p-8 rounded-3xl border border-red-100">
               <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-red-800 mb-2">오류가 발생했습니다</h3>
-              <p className="text-red-600 mb-6">{error}</p>
+              <p className="text-red-600 mb-6 break-words">{error}</p>
               <Button onClick={() => setAppState(AppState.START)} variant="secondary">
                 처음으로 돌아가기
               </Button>
