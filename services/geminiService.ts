@@ -1,9 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Question, UsageType } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export const generateQuestions = async (count: number, usageType: UsageType): Promise<Question[]> => {
+  // Initialize the client inside the function. 
+  // This prevents the app from crashing on load if process.env.API_KEY is missing or invalid in the environment.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = "gemini-2.5-flash";
 
   const prompt = `
@@ -53,9 +54,15 @@ export const generateQuestions = async (count: number, usageType: UsageType): Pr
     throw new Error("Empty response from Gemini");
   }
 
-  // Handle potential markdown code blocks
+  // Handle potential markdown code blocks more robustly
+  jsonText = jsonText.trim();
   if (jsonText.startsWith("```")) {
-    jsonText = jsonText.replace(/^```(json)?\n/, "").replace(/\n```$/, "");
+    const match = jsonText.match(/```(?:json)?([\s\S]*?)```/);
+    if (match) {
+      jsonText = match[1];
+    } else {
+      jsonText = jsonText.replace(/^```(json)?/, "").replace(/```$/, "");
+    }
   }
 
   try {
