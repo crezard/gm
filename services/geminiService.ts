@@ -48,9 +48,14 @@ export const generateQuestions = async (count: number, usageType: UsageType): Pr
     }
   });
 
-  const jsonText = response.text;
+  let jsonText = response.text;
   if (!jsonText) {
     throw new Error("Empty response from Gemini");
+  }
+
+  // Handle potential markdown code blocks
+  if (jsonText.startsWith("```")) {
+    jsonText = jsonText.replace(/^```(json)?\n/, "").replace(/\n```$/, "");
   }
 
   try {
