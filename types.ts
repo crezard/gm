@@ -1,8 +1,7 @@
 export enum UsageType {
-  EXPERIENCE = '경험 (Experience)',
-  CONTINUATION = '계속 (Continuation)',
-  COMPLETION = '완료 (Completion)',
-  RESULT = '결과 (Result)',
+  NOUN = '명사적 용법 (Noun)',
+  ADJECTIVE = '형용사적 용법 (Adjective)',
+  ADVERB = '부사적 용법 (Adverb)',
   MIXED = '종합 (Mixed)'
 }
 
@@ -12,7 +11,7 @@ export interface Question {
   options: string[];
   correctAnswer: string;
   explanation: string;
-  usageType: string; // "경험", "계속", "완료", "결과"
+  usageType: string; // "명사적", "형용사적", "부사적"
   koreanTranslation: string;
 }
 

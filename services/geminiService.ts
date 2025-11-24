@@ -55,14 +55,15 @@ export const generateQuestions = async (count: number, usageType: UsageType): Pr
 
   const prompt = `
     You are an expert English teacher for Korean middle school students (3rd year).
-    Generate ${count} multiple-choice grammar questions specifically about the "Present Perfect" tense (현재완료).
+    Generate ${count} multiple-choice grammar questions specifically about the "To-Infinitive" (to 부정사).
     
-    Focus on the specific usage type: ${usageType}. If usage type is 'Mixed', include a mix of Experience, Continuation, Completion, and Result.
+    Focus on the specific usage type: ${usageType}. 
+    If usage type is 'Mixed', include a mix of Noun (Subject/Object/Complement), Adjective, and Adverb (Purpose/Emotion/Result) usages.
     
     The questions should test:
-    1. Correct form (have/has + p.p.)
-    2. Distinguishing between usage types (e.g., determining if a sentence is 'experience' or 'result')
-    3. Common mistakes Korean students make.
+    1. Correct form (to + verb base vs to + -ing vs verb-ing).
+    2. Distinguishing between usage types (e.g., Identifying if 'to go' works as a noun or adverb in the sentence).
+    3. Common mistakes Korean students make (e.g., confusing 'to' preposition with 'to' infinitive, or 'forget to' vs 'forget -ing').
     
     Provide the output strictly in JSON format.
   `;
@@ -79,15 +80,15 @@ export const generateQuestions = async (count: number, usageType: UsageType): Pr
             type: Type.OBJECT,
             properties: {
               id: { type: Type.STRING },
-              text: { type: Type.STRING, description: "The question sentence, often with a blank." },
+              text: { type: Type.STRING, description: "The question sentence, often with a blank or underlined part." },
               options: { 
                 type: Type.ARRAY, 
                 items: { type: Type.STRING },
                 description: "4 multiple choice options."
               },
               correctAnswer: { type: Type.STRING, description: "The exact string of the correct option." },
-              explanation: { type: Type.STRING, description: "Explanation in Korean why the answer is correct." },
-              usageType: { type: Type.STRING, description: "One of: 경험, 계속, 완료, 결과" },
+              explanation: { type: Type.STRING, description: "Explanation in Korean why the answer is correct and others are wrong." },
+              usageType: { type: Type.STRING, description: "One of: 명사적 용법, 형용사적 용법, 부사적 용법" },
               koreanTranslation: { type: Type.STRING, description: "Korean translation of the question sentence." }
             },
             required: ["id", "text", "options", "correctAnswer", "explanation", "usageType", "koreanTranslation"]

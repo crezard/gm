@@ -21,7 +21,7 @@ const App: React.FC = () => {
   const startQuiz = async (type: UsageType) => {
     setAppState(AppState.LOADING);
     setError(null);
-    setLoadingMessage("AI 선생님이 맞춤형 문제를 출제 중입니다...");
+    setLoadingMessage("AI 선생님이 맞춤형 to 부정사 문제를 출제 중입니다...");
     
     try {
       // Generate 5 questions for a quick session
@@ -79,9 +79,9 @@ const App: React.FC = () => {
               <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <GraduationCap size={40} className="text-indigo-600" />
               </div>
-              <h1 className="text-3xl font-bold text-slate-800 mb-3">중3 현재완료 완전 정복</h1>
+              <h1 className="text-3xl font-bold text-slate-800 mb-3">중3 to 부정사 완전 정복</h1>
               <p className="text-slate-500 mb-8">
-                'have + p.p.'의 4가지 용법을 마스터해볼까요?<br/>
+                명사적, 형용사적, 부사적 용법을 마스터해볼까요?<br/>
                 AI가 매번 새로운 문제를 만들어줍니다.
               </p>
 
@@ -140,7 +140,7 @@ const App: React.FC = () => {
       case AppState.RESULT:
         const percentage = (quizState.score / questions.length) * 100;
         let feedback = "";
-        if (percentage === 100) feedback = "완벽해요! 현재완료 마스터시군요! 🎉";
+        if (percentage === 100) feedback = "완벽해요! to 부정사 마스터시군요! 🎉";
         else if (percentage >= 80) feedback = "아주 잘했어요! 조금만 더 하면 만점! 👍";
         else if (percentage >= 60) feedback = "잘하고 있어요! 틀린 문제를 다시 확인해보세요. 💪";
         else feedback = "괜찮아요! 다시 한번 복습해볼까요? 🌱";
