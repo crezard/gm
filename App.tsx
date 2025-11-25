@@ -24,8 +24,8 @@ const App: React.FC = () => {
     setLoadingMessage("AI 선생님이 맞춤형 to 부정사 문제를 출제 중입니다...");
     
     try {
-      // Generate 5 questions for a quick session
-      const generatedQuestions = await generateQuestions(5, type);
+      // Generate 10 questions for a standard session
+      const generatedQuestions = await generateQuestions(10, type);
       setQuestions(generatedQuestions);
       setQuizState({
         currentQuestionIndex: 0,
@@ -96,7 +96,7 @@ const App: React.FC = () => {
                       {type}
                     </span>
                     <span className="text-xs text-slate-400 group-hover:text-indigo-500">
-                      5문제 풀기 &rarr;
+                      10문제 풀기 &rarr;
                     </span>
                   </button>
                 ))}
@@ -124,7 +124,7 @@ const App: React.FC = () => {
              <div className="max-w-2xl mx-auto mb-4 flex justify-between items-center">
                 <span className="font-bold text-indigo-900">Q. {quizState.currentQuestionIndex + 1}</span>
                 <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold">
-                  점수: {quizState.score * 20}점
+                  점수: {quizState.score * 10}점
                 </span>
              </div>
             <ProgressBar current={quizState.currentQuestionIndex} total={questions.length} />
@@ -154,7 +154,7 @@ const App: React.FC = () => {
               
               <h2 className="text-2xl font-bold text-slate-800 mb-2">퀴즈 완료!</h2>
               <div className="text-5xl font-black text-indigo-600 mb-4 tracking-tight">
-                {quizState.score * 20}<span className="text-2xl text-slate-400 font-medium">점</span>
+                {quizState.score * 10}<span className="text-2xl text-slate-400 font-medium">점</span>
               </div>
               <p className="text-slate-600 mb-8 bg-slate-50 p-4 rounded-xl">
                 {feedback}
